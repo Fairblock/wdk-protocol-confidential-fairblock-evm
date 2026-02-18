@@ -53,11 +53,6 @@ export class NotImplementedError extends Error {
  */
 
 /**
- * @typedef {Object} GetBalanceOptions
- * @property {string} token - The address of the token.
- */
-
-/**
  * @typedef {Object} QuoteTransferConfidentialOptions
  */
 
@@ -127,16 +122,6 @@ export class IConfidentialProtocol {
    */
   async getConfidentialBalance(options) {
     throw new NotImplementedError("getConfidentialBalance(options)");
-  }
-
-  /**
-   * Gets the public balance.
-   *
-   * @param {GetBalanceOptions} options - The balance options.
-   * @returns {Promise<bigint>} The public balance.
-   */
-  async getBalance(options) {
-    throw new NotImplementedError("getBalance(options)");
   }
 
   /**
@@ -231,17 +216,6 @@ export default class ConfidentialProtocol {
    */
   async getConfidentialBalance(options) {
     throw new NotImplementedError("getConfidentialBalance(options)");
-  }
-
-  /**
-   * Gets the public balance.
-   *
-   * @abstract
-   * @param {GetBalanceOptions} options - The balance options.
-   * @returns {Promise<bigint>} The public balance.
-   */
-  async getBalance(options) {
-    throw new NotImplementedError("getBalance(options)");
   }
 
   /**

@@ -25,7 +25,6 @@ import ConfidentialProtocol from "./confidential-protocol.js";
 /** @typedef {import('./confidential-protocol.js').TransferConfidentialOptions} TransferConfidentialOptions */
 /** @typedef {import('./confidential-protocol.js').WithdrawConfidentialOptions} WithdrawConfidentialOptions */
 /** @typedef {import('./confidential-protocol.js').GetConfidentialBalanceOptions} GetConfidentialBalanceOptions */
-/** @typedef {import('./confidential-protocol.js').GetBalanceOptions} GetBalanceOptions */
 /** @typedef {import('./confidential-protocol.js').QuoteTransferConfidentialOptions} QuoteTransferConfidentialOptions */
 /** @typedef {import('./confidential-protocol.js').ConfidentialResult} ConfidentialResult */
 /** @typedef {import('./confidential-protocol.js').ConfidentialKeys} ConfidentialKeys */
@@ -33,7 +32,6 @@ import ConfidentialProtocol from "./confidential-protocol.js";
 
 /**
  * @typedef {Object} ConfidentialProtocolConfig
- * @property {string} stableTrust - The address of the StableTrust contract.
  * @property {string} rpcUrl - The RPC URL of the blockchain network.
  * @property {number} chainId - The chain ID.
  */
@@ -54,7 +52,6 @@ export default class ConfidentialProtocolEvm extends ConfidentialProtocol {
     /** @private */
     this._client = new ConfidentialTransferClient(
       config.rpcUrl,
-      config.stableTrust,
       config.chainId,
     );
 
@@ -207,21 +204,6 @@ export default class ConfidentialProtocolEvm extends ConfidentialProtocol {
     );
 
     return { amount: BigInt(result.amount) };
-  }
-
-  /**
-   * Gets the public balance.
-   *
-   * @param {GetBalanceOptions} options - The balance options.
-   * @returns {Promise<bigint>} The public balance.
-   */
-  async getBalance(options) {
-    const { token } = options;
-    const address = await this._account.getAddress();
-
-    const balance = await this._client.getPublicBalance(address, token);
-
-    return BigInt(balance);
   }
 
   /**

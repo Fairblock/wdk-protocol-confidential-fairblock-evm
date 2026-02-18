@@ -6,15 +6,12 @@ import ConfidentialProtocolEvm from "../src/fairblock-protocol-evm.js";
 
 dotenv.config();
 
-const STABLETRUST_CONTRACT_ADDRESS =
-  "0x29E4fd434758b1677c10854Fa81C2fc496D76E62";
 const USDT0_CONTRACT_ADDRESS = "0x78Cf24370174180738C5B8E352B6D14c83a6c9A9";
 const RPC_URL = "https://rpc.testnet.stable.xyz";
 const EXPLORER_URL = "https://testnet.stablescan.xyz/tx/";
 const CHAIN_ID = 2201;
 
 const CONFIDENTIAL_CONFIG = {
-  stableTrust: STABLETRUST_CONTRACT_ADDRESS,
   rpcUrl: RPC_URL,
   chainId: CHAIN_ID,
 };
@@ -46,10 +43,6 @@ async function main() {
 
     const senderAddress = await sender.getAddress();
     const receiverAddress = await receiver.getAddress();
-
-    // Using WDK to get public balances
-    const senderBalance = await sender.getBalance();
-    const receiverBalance = await receiver.getBalance();
 
     // --- FAIRBLOCK INTEGRATION START ---
     console.log("\n--- Initializing Confidential Protocols ---");
@@ -84,15 +77,9 @@ async function main() {
     let senderConfBalanceBefore = await senderProtocol.getConfidentialBalance({
       token: USDT0_CONTRACT_ADDRESS,
     });
-    let senderPublicBalanceBefore = await senderProtocol.getBalance({
-      token: USDT0_CONTRACT_ADDRESS,
-    });
 
     console.log(
       `Pre-Deposit Confidential Balance(Sender): ${ethers.formatUnits(senderConfBalanceBefore.amount, 2)} USDT0`,
-    );
-    console.log(
-      `Pre-Deposit Public Balance(Sender): ${ethers.formatUnits(senderPublicBalanceBefore, 6)} USDT0`,
     );
 
     const depRes = await senderProtocol.depositConfidential({
@@ -105,15 +92,9 @@ async function main() {
     let senderConfBalanceAfter = await senderProtocol.getConfidentialBalance({
       token: USDT0_CONTRACT_ADDRESS,
     });
-    let senderPublicBalanceAfter = await senderProtocol.getBalance({
-      token: USDT0_CONTRACT_ADDRESS,
-    });
 
     console.log(
       `Post-Deposit Confidential Balance(Sender): ${ethers.formatUnits(senderConfBalanceAfter.amount, 2)} USDT0`,
-    );
-    console.log(
-      `Post-Deposit Public Balance(Sender): ${ethers.formatUnits(senderPublicBalanceAfter, 6)} USDT0`,
     );
 
     // B. TRANSFER
@@ -146,14 +127,6 @@ async function main() {
     console.log("Withdrawing 0.5 tokens to public balance...");
     const withdrawAmount = ethers.parseUnits("0.5", 2);
 
-    // Checking RECIPIENT balance before withdraw
-    let recipientPublicBalanceBefore = await receiverProtocol.getBalance({
-      token: USDT0_CONTRACT_ADDRESS,
-    });
-    console.log(
-      `Pre-Withdraw Public Balance(Recipient): ${ethers.formatUnits(recipientPublicBalanceBefore, 6)} USDT0`,
-    );
-
     const withdrawRes = await receiverProtocol.withdrawConfidential({
       token: USDT0_CONTRACT_ADDRESS,
       amount: withdrawAmount,
@@ -161,12 +134,12 @@ async function main() {
 
     console.log(`Tx Hash: ${withdrawRes.hash}`);
     console.log(`View Transaction: ${EXPLORER_URL}${withdrawRes.hash}`);
-
-    let recipientPublicBalanceAfter = await receiverProtocol.getBalance({
-      token: USDT0_CONTRACT_ADDRESS,
-    });
+    let receiverConfBalanceAfterWithdraw =
+      await receiverProtocol.getConfidentialBalance({
+        token: USDT0_CONTRACT_ADDRESS,
+      });
     console.log(
-      `Post-Withdraw Public Balance(Recipient): ${ethers.formatUnits(recipientPublicBalanceAfter, 6)} USDT0`,
+      `Post-Withdraw Confidential Balance(Receiver): ${ethers.formatUnits(receiverConfBalanceAfterWithdraw.amount, 2)} USDT0`,
     );
 
     console.log("\n=== Demo Complete ===");

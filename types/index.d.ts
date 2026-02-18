@@ -27,10 +27,6 @@ export interface GetConfidentialBalanceOptions {
   token: string;
 }
 
-export interface GetBalanceOptions {
-  token: string;
-}
-
 export interface QuoteTransferConfidentialOptions {}
 
 export interface ConfidentialResult {
@@ -47,7 +43,6 @@ export interface ConfidentialBalanceResult {
 }
 
 export interface ConfidentialProtocolConfig {
-  stableTrust: string;
   rpcUrl: string;
   chainId: number;
 }
@@ -72,7 +67,6 @@ export declare class IConfidentialProtocol {
   getConfidentialBalance(
     options: GetConfidentialBalanceOptions,
   ): Promise<ConfidentialBalanceResult>;
-  getBalance(options: GetBalanceOptions): Promise<bigint>;
   quoteTransferConfidential(
     options: QuoteTransferConfidentialOptions,
   ): Promise<bigint>;
@@ -99,7 +93,6 @@ export declare class ConfidentialProtocol extends IConfidentialProtocol {
   getConfidentialBalance(
     options: GetConfidentialBalanceOptions,
   ): Promise<ConfidentialBalanceResult>;
-  getBalance(options: GetBalanceOptions): Promise<bigint>;
   quoteTransferConfidential(
     options: QuoteTransferConfidentialOptions,
   ): Promise<bigint>;
@@ -123,7 +116,6 @@ export default class ConfidentialProtocolEvm extends ConfidentialProtocol {
   getConfidentialBalance(
     options: GetConfidentialBalanceOptions,
   ): Promise<ConfidentialBalanceResult>;
-  getBalance(options: GetBalanceOptions): Promise<bigint>;
   quoteTransferConfidential(
     options: QuoteTransferConfidentialOptions,
   ): Promise<bigint>;
