@@ -45,7 +45,7 @@ You will need the following configuration values for the network you are connect
 ### Usage example
 
 ```javascript
-import ConfidentialProtocolEvm from 'wdk-protocol-confidential-fairblock-evm'
+import ConfidentialProtocolEvm from '@tetherto/wdk-protocol-confidential-fairblock-evm'
 import { WalletAccountEvm } from '@tetherto/wdk-wallet-evm'
 
 // Setup Account
