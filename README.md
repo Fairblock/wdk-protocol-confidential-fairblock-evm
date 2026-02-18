@@ -79,8 +79,8 @@ await receiverProtocol.withdrawConfidential({
 - `transferConfidential({ recipient, token, amount })`
 - `withdrawConfidential({ token, amount })`
 - `getConfidentialBalance({ token })`
-- `getPublicBalance({ token })`
-- `getFee(options?)`
+- `getBalance({ token })`
+- `quoteTransferConfidential(options?)`
 
 ## Notes
 

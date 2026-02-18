@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-'use strict'
+"use strict";
 
 export class NotImplementedError extends Error {
-  constructor (methodName) {
-    super(`Method '${methodName}' is not implemented.`)
-    this.name = 'NotImplementedError'
+  constructor(methodName) {
+    super(`Method '${methodName}' is not implemented.`);
+    this.name = "NotImplementedError";
   }
 }
 
@@ -48,17 +48,17 @@ export class NotImplementedError extends Error {
  */
 
 /**
- * @typedef {Object} ConfidentialBalanceOptions
+ * @typedef {Object} GetConfidentialBalanceOptions
  * @property {string} token - The address of the token.
  */
 
 /**
- * @typedef {Object} PublicBalanceOptions
+ * @typedef {Object} GetBalanceOptions
  * @property {string} token - The address of the token.
  */
 
 /**
- * @typedef {Object} FeeOptions
+ * @typedef {Object} QuoteTransferConfidentialOptions
  */
 
 /**
@@ -85,8 +85,8 @@ export class IConfidentialProtocol {
    * @param {EnableConfidentialityOptions} [options] - The options.
    * @returns {Promise<ConfidentialKeys>} The generated keys.
    */
-  async enableConfidentiality (options) {
-    throw new NotImplementedError('enableConfidentiality(options)')
+  async enableConfidentiality(options) {
+    throw new NotImplementedError("enableConfidentiality(options)");
   }
 
   /**
@@ -95,8 +95,8 @@ export class IConfidentialProtocol {
    * @param {DepositConfidentialOptions} options - The deposit options.
    * @returns {Promise<ConfidentialResult>} The operation result.
    */
-  async depositConfidential (options) {
-    throw new NotImplementedError('depositConfidential(options)')
+  async depositConfidential(options) {
+    throw new NotImplementedError("depositConfidential(options)");
   }
 
   /**
@@ -105,8 +105,8 @@ export class IConfidentialProtocol {
    * @param {TransferConfidentialOptions} options - The transfer options.
    * @returns {Promise<ConfidentialResult>} The operation result.
    */
-  async transferConfidential (options) {
-    throw new NotImplementedError('transferConfidential(options)')
+  async transferConfidential(options) {
+    throw new NotImplementedError("transferConfidential(options)");
   }
 
   /**
@@ -115,38 +115,38 @@ export class IConfidentialProtocol {
    * @param {WithdrawConfidentialOptions} options - The withdraw options.
    * @returns {Promise<ConfidentialResult>} The operation result.
    */
-  async withdrawConfidential (options) {
-    throw new NotImplementedError('withdrawConfidential(options)')
+  async withdrawConfidential(options) {
+    throw new NotImplementedError("withdrawConfidential(options)");
   }
 
   /**
    * Gets the confidential balance.
    *
-   * @param {ConfidentialBalanceOptions} options - The balance options.
+   * @param {GetConfidentialBalanceOptions} options - The balance options.
    * @returns {Promise<ConfidentialBalanceResult>} The confidential balance.
    */
-  async getConfidentialBalance (options) {
-    throw new NotImplementedError('getConfidentialBalance(options)')
+  async getConfidentialBalance(options) {
+    throw new NotImplementedError("getConfidentialBalance(options)");
   }
 
   /**
    * Gets the public balance.
    *
-   * @param {PublicBalanceOptions} options - The balance options.
+   * @param {GetBalanceOptions} options - The balance options.
    * @returns {Promise<bigint>} The public balance.
    */
-  async getPublicBalance (options) {
-    throw new NotImplementedError('getPublicBalance(options)')
+  async getBalance(options) {
+    throw new NotImplementedError("getBalance(options)");
   }
 
   /**
-   * Gets the fee amount.
+   * Quotes a confidential transfer.
    *
-   * @param {FeeOptions} options - The fee options.
-   * @returns {Promise<bigint>} The fee amount.
+   * @param {QuoteTransferConfidentialOptions} options - The quote options.
+   * @returns {Promise<bigint>} The quoted amount.
    */
-  async getFee (options) {
-    throw new NotImplementedError('getFee(options)')
+  async quoteTransferConfidential(options) {
+    throw new NotImplementedError("quoteTransferConfidential(options)");
   }
 }
 
@@ -168,14 +168,14 @@ export default class ConfidentialProtocol {
    * @overload
    * @param {WalletAccountEvm} account - The wallet account to use to interact with the protocol.
    */
-  constructor (account) {
+  constructor(account) {
     /**
      * The wallet account to use to interact with the protocol.
      *
      * @protected
      * @type {WalletAccountReadOnlyEvm | WalletAccountEvm}
      */
-    this._account = account
+    this._account = account;
   }
 
   /**
@@ -185,8 +185,8 @@ export default class ConfidentialProtocol {
    * @param {EnableConfidentialityOptions} [options] - The options.
    * @returns {Promise<ConfidentialKeys>} The generated keys.
    */
-  async enableConfidentiality (options) {
-    throw new NotImplementedError('enableConfidentiality(options)')
+  async enableConfidentiality(options) {
+    throw new NotImplementedError("enableConfidentiality(options)");
   }
 
   /**
@@ -196,8 +196,8 @@ export default class ConfidentialProtocol {
    * @param {DepositConfidentialOptions} options - The deposit options.
    * @returns {Promise<ConfidentialResult>} The operation result.
    */
-  async depositConfidential (options) {
-    throw new NotImplementedError('depositConfidential(options)')
+  async depositConfidential(options) {
+    throw new NotImplementedError("depositConfidential(options)");
   }
 
   /**
@@ -207,8 +207,8 @@ export default class ConfidentialProtocol {
    * @param {TransferConfidentialOptions} options - The transfer options.
    * @returns {Promise<ConfidentialResult>} The operation result.
    */
-  async transferConfidential (options) {
-    throw new NotImplementedError('transferConfidential(options)')
+  async transferConfidential(options) {
+    throw new NotImplementedError("transferConfidential(options)");
   }
 
   /**
@@ -218,40 +218,40 @@ export default class ConfidentialProtocol {
    * @param {WithdrawConfidentialOptions} options - The withdraw options.
    * @returns {Promise<ConfidentialResult>} The operation result.
    */
-  async withdrawConfidential (options) {
-    throw new NotImplementedError('withdrawConfidential(options)')
+  async withdrawConfidential(options) {
+    throw new NotImplementedError("withdrawConfidential(options)");
   }
 
   /**
    * Gets the confidential balance.
    *
    * @abstract
-   * @param {ConfidentialBalanceOptions} options - The balance options.
+   * @param {GetConfidentialBalanceOptions} options - The balance options.
    * @returns {Promise<ConfidentialBalanceResult>} The confidential balance.
    */
-  async getConfidentialBalance (options) {
-    throw new NotImplementedError('getConfidentialBalance(options)')
+  async getConfidentialBalance(options) {
+    throw new NotImplementedError("getConfidentialBalance(options)");
   }
 
   /**
    * Gets the public balance.
    *
    * @abstract
-   * @param {PublicBalanceOptions} options - The balance options.
+   * @param {GetBalanceOptions} options - The balance options.
    * @returns {Promise<bigint>} The public balance.
    */
-  async getPublicBalance (options) {
-    throw new NotImplementedError('getPublicBalance(options)')
+  async getBalance(options) {
+    throw new NotImplementedError("getBalance(options)");
   }
 
   /**
-   * Gets the fee amount.
+   * Quotes a confidential transfer.
    *
    * @abstract
-   * @param {FeeOptions} options - The fee options.
-   * @returns {Promise<bigint>} The fee amount.
+   * @param {QuoteTransferConfidentialOptions} options - The quote options.
+   * @returns {Promise<bigint>} The quoted amount.
    */
-  async getFee (options) {
-    throw new NotImplementedError('getFee(options)')
+  async quoteTransferConfidential(options) {
+    throw new NotImplementedError("quoteTransferConfidential(options)");
   }
 }

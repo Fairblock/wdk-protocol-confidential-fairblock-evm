@@ -23,15 +23,15 @@ export interface WithdrawConfidentialOptions {
   amount: Amount;
 }
 
-export interface ConfidentialBalanceOptions {
+export interface GetConfidentialBalanceOptions {
   token: string;
 }
 
-export interface PublicBalanceOptions {
+export interface GetBalanceOptions {
   token: string;
 }
 
-export interface FeeOptions {}
+export interface QuoteTransferConfidentialOptions {}
 
 export interface ConfidentialResult {
   hash: string;
@@ -70,10 +70,12 @@ export declare class IConfidentialProtocol {
     options: WithdrawConfidentialOptions,
   ): Promise<ConfidentialResult>;
   getConfidentialBalance(
-    options: ConfidentialBalanceOptions,
+    options: GetConfidentialBalanceOptions,
   ): Promise<ConfidentialBalanceResult>;
-  getPublicBalance(options: PublicBalanceOptions): Promise<bigint>;
-  getFee(options: FeeOptions): Promise<bigint>;
+  getBalance(options: GetBalanceOptions): Promise<bigint>;
+  quoteTransferConfidential(
+    options: QuoteTransferConfidentialOptions,
+  ): Promise<bigint>;
 }
 
 export declare class ConfidentialProtocol extends IConfidentialProtocol {
@@ -95,10 +97,12 @@ export declare class ConfidentialProtocol extends IConfidentialProtocol {
     options: WithdrawConfidentialOptions,
   ): Promise<ConfidentialResult>;
   getConfidentialBalance(
-    options: ConfidentialBalanceOptions,
+    options: GetConfidentialBalanceOptions,
   ): Promise<ConfidentialBalanceResult>;
-  getPublicBalance(options: PublicBalanceOptions): Promise<bigint>;
-  getFee(options: FeeOptions): Promise<bigint>;
+  getBalance(options: GetBalanceOptions): Promise<bigint>;
+  quoteTransferConfidential(
+    options: QuoteTransferConfidentialOptions,
+  ): Promise<bigint>;
 }
 
 export default class ConfidentialProtocolEvm extends ConfidentialProtocol {
@@ -117,8 +121,10 @@ export default class ConfidentialProtocolEvm extends ConfidentialProtocol {
     options: WithdrawConfidentialOptions,
   ): Promise<ConfidentialResult>;
   getConfidentialBalance(
-    options: ConfidentialBalanceOptions,
+    options: GetConfidentialBalanceOptions,
   ): Promise<ConfidentialBalanceResult>;
-  getPublicBalance(options: PublicBalanceOptions): Promise<bigint>;
-  getFee(options: FeeOptions): Promise<bigint>;
+  getBalance(options: GetBalanceOptions): Promise<bigint>;
+  quoteTransferConfidential(
+    options: QuoteTransferConfidentialOptions,
+  ): Promise<bigint>;
 }
