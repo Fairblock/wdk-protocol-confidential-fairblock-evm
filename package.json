@@ -1,5 +1,5 @@
 {
-  "name": "@tetherto/wdk-protocol-confidential-fairblock-evm",
+  "name": "@fairblock/wdk-protocol-confidential-fairblock-evm",
   "version": "1.0.0",
   "description": "A confidential fairblock protocol implementation for EVM-compatible blockchains using the WDK framework.",
   "keywords": [
