@@ -47,6 +47,46 @@ export interface ConfidentialProtocolConfig {
   chainId: number;
 }
 
+/**
+ * A WDK account patched with confidential methods after calling enableConfidentiality().
+ */
+export type ConfidentialAccount<
+  T extends WalletAccountReadOnlyEvm | WalletAccountEvm =
+    WalletAccountEvm,
+> = T & {
+  depositConfidential(
+    options: DepositConfidentialOptions,
+  ): Promise<ConfidentialResult>;
+  transferConfidential(
+    options: TransferConfidentialOptions,
+  ): Promise<ConfidentialResult>;
+  withdrawConfidential(
+    options: WithdrawConfidentialOptions,
+  ): Promise<ConfidentialResult>;
+  getConfidentialBalance(
+    options: GetConfidentialBalanceOptions,
+  ): Promise<ConfidentialBalanceResult>;
+  quoteTransferConfidential(
+    options?: QuoteTransferConfidentialOptions,
+  ): Promise<bigint>;
+};
+
+/**
+ * Enables confidentiality for a WDK account by patching it with confidential methods.
+ * Registers the account's public key on-chain and returns the same account instance
+ * augmented with confidential operations.
+ *
+ * @example
+ * const confAccount = await enableConfidentiality(account, { rpcUrl, chainId });
+ * await confAccount.depositConfidential({ token, amount });
+ * await confAccount.transferConfidential({ recipient, token, amount });
+ * await confAccount.withdrawConfidential({ token, amount });
+ */
+export declare function enableConfidentiality(
+  account: WalletAccountEvm,
+  config: ConfidentialProtocolConfig,
+): Promise<ConfidentialAccount<WalletAccountEvm>>;
+
 export declare class NotImplementedError extends Error {
   constructor(methodName: string);
 }
@@ -77,46 +117,8 @@ export declare class ConfidentialProtocol extends IConfidentialProtocol {
 
   constructor(account: WalletAccountReadOnlyEvm);
   constructor(account: WalletAccountEvm);
-
-  enableConfidentiality(
-    options?: EnableConfidentialityOptions,
-  ): Promise<ConfidentialKeys>;
-  depositConfidential(
-    options: DepositConfidentialOptions,
-  ): Promise<ConfidentialResult>;
-  transferConfidential(
-    options: TransferConfidentialOptions,
-  ): Promise<ConfidentialResult>;
-  withdrawConfidential(
-    options: WithdrawConfidentialOptions,
-  ): Promise<ConfidentialResult>;
-  getConfidentialBalance(
-    options: GetConfidentialBalanceOptions,
-  ): Promise<ConfidentialBalanceResult>;
-  quoteTransferConfidential(
-    options: QuoteTransferConfidentialOptions,
-  ): Promise<bigint>;
 }
 
-export default class ConfidentialProtocolEvm extends ConfidentialProtocol {
+export declare class ConfidentialProtocolEvm extends ConfidentialProtocol {
   constructor(account: WalletAccountEvm, config: ConfidentialProtocolConfig);
-
-  enableConfidentiality(
-    options?: EnableConfidentialityOptions,
-  ): Promise<ConfidentialKeys>;
-  depositConfidential(
-    options: DepositConfidentialOptions,
-  ): Promise<ConfidentialResult>;
-  transferConfidential(
-    options: TransferConfidentialOptions,
-  ): Promise<ConfidentialResult>;
-  withdrawConfidential(
-    options: WithdrawConfidentialOptions,
-  ): Promise<ConfidentialResult>;
-  getConfidentialBalance(
-    options: GetConfidentialBalanceOptions,
-  ): Promise<ConfidentialBalanceResult>;
-  quoteTransferConfidential(
-    options: QuoteTransferConfidentialOptions,
-  ): Promise<bigint>;
 }

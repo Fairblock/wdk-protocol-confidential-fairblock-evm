@@ -46,32 +46,39 @@ You will need the following configuration values for the network you are connect
 ### Usage example
 
 ```javascript
-import ConfidentialProtocolEvm from "@fairblock/wdk-protocol-confidential-fairblock-evm";
-import { WalletAccountEvm } from "@tetherto/wdk-wallet-evm";
+import { enableConfidentiality } from "@fairblock/wdk-protocol-confidential-fairblock-evm";
+import WDK from "@tetherto/wdk";
+import WalletManagerEvm from "@tetherto/wdk-wallet-evm";
 
-// Setup Account
-const account = new WalletAccountEvm(process.env.SEED_PHRASE, "0'/0/0", {
-  provider: "https://rpc.testnet.stable.xyz",
-});
+// Setup WDK account
+const wdk = new WDK(process.env.SEED_PHRASE).registerWallet(
+  "ethereum",
+  WalletManagerEvm,
+  { provider: "https://rpc.testnet.stable.xyz" },
+);
+const account = await wdk.getAccount("ethereum", 0);
 
-// Initialize Protocol
-const confidential = new ConfidentialProtocolEvm(account, {
+// Enable confidentiality — patches the account with confidential methods
+const confAccount = await enableConfidentiality(account, {
   rpcUrl: "https://rpc.testnet.stable.xyz",
   chainId: 2201,
 });
 
-// Enable Confidentiality
-const keys = await confidential.enableConfidentiality();
-console.log("Public Key registered:", keys.publicKey);
-
 // Check Confidential Balance
-const balance = await confidential.getConfidentialBalance({
+const balance = await confAccount.getConfidentialBalance({
   token: "0x78Cf24370174180738C5B8E352B6D14c83a6c9A9",
 });
 console.log("Confidential Balance:", balance.amount);
 
+// Deposit to Confidential Balance
+const depositResult = await confAccount.depositConfidential({
+  token: "0x78Cf24370174180738C5B8E352B6D14c83a6c9A9",
+  amount: 100n,
+});
+console.log("Deposit Hash:", depositResult.hash);
+
 // Withdraw to Public Address
-const withdrawResult = await confidential.withdrawConfidential({
+const withdrawResult = await confAccount.withdrawConfidential({
   token: "0x78Cf24370174180738C5B8E352B6D14c83a6c9A9",
   amount: 500000n,
 });
@@ -82,43 +89,37 @@ console.log("Withdrawal Hash:", withdrawResult.hash);
 
 ### Table of Contents
 
-| Class                                               | Description                             | Methods                                          |
-| --------------------------------------------------- | --------------------------------------- | ------------------------------------------------ |
-| [ConfidentialProtocolEvm](#confidentialprotocolevm) | Main class for confidential operations. | [Constructor](#constructor), [Methods](#methods) |
+| Export                                              | Description                                                          |
+| --------------------------------------------------- | -------------------------------------------------------------------- |
+| [`enableConfidentiality`](#enableconfidentiality)   | Main function — wraps a WDK account with confidential capabilities.  |
+| [`ConfidentialProtocolEvm`](#confidentialprotocolevm) | Lower-level class for advanced use cases.                          |
 
-### ConfidentialProtocolEvm
+### `enableConfidentiality(account, config)`
 
-The main class for interacting with the Fairblock confidential transfer protocol on EVM chains.
-
-#### Constructor
+The primary API. Takes a WDK account, registers it for confidential operations on-chain, and patches it in-place with confidential methods. Returns the same account instance.
 
 ```javascript
-new ConfidentialProtocolEvm(account, config);
+const confAccount = await enableConfidentiality(account, config);
 ```
 
 **Parameters:**
 
-- `account` (WalletAccountEvm | WalletAccountReadOnlyEvm): The wallet account to use.
+- `account` (WalletAccountEvm): The WDK wallet account to wrap.
 - `config` (object): Configuration object.
   - `rpcUrl` (string): JSON-RPC URL of the network.
   - `chainId` (number): Chain ID of the network.
 
-#### Methods
+**Returns:** `Promise<ConfidentialAccount>` — the original account patched with the methods below.
+
+#### Methods on `confAccount`
 
 | Method                                | Description                                          | Returns                              |
 | ------------------------------------- | ---------------------------------------------------- | ------------------------------------ |
-| `enableConfidentiality(options?)`     | Registers user keys for confidential use.            | `Promise<ConfidentialKeys>`          |
 | `depositConfidential(options)`        | Deposits tokens into confidential balance.           | `Promise<ConfidentialResult>`        |
 | `transferConfidential(options)`       | Transfers tokens confidentially.                     | `Promise<ConfidentialResult>`        |
 | `withdrawConfidential(options)`       | Withdraws tokens to public balance.                  | `Promise<ConfidentialResult>`        |
 | `getConfidentialBalance(options)`     | Gets the decrypted confidential balance.             | `Promise<ConfidentialBalanceResult>` |
 | `quoteTransferConfidential(options?)` | Gets the estimated cost for a confidential transfer. | `Promise<bigint>`                    |
-
-##### `enableConfidentiality(options?)`
-
-Derives and registers the necessary keys for confidential transactions. This step requires a signature from the user.
-
-**Returns:** `Promise<{ publicKey: string, privateKey: string }>`
 
 ##### `depositConfidential(options)`
 
@@ -170,9 +171,9 @@ Fetch and decrypt the confidential balance for a specific token.
 
 ##### `quoteTransferConfidential(options?)`
 
-Gets the estimated cost of a confidential transfer operation. Note: This currently returns 0n as a placeholder.
+Gets the estimated fee for a confidential transfer operation.
 
-**Returns:** `Promise<bigint>` - Estimated fee.
+**Returns:** `Promise<bigint>` - Estimated fee in base units.
 
 ## 🌐 Supported Networks
 

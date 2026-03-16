@@ -4,4 +4,7 @@ export {
   default as ConfidentialProtocol,
 } from "./src/confidential-protocol.js";
 
-export { default } from "./src/fairblock-protocol-evm.js";
+export {
+  enableConfidentiality,
+  ConfidentialProtocolEvm,
+} from "./src/fairblock-protocol-evm.js";

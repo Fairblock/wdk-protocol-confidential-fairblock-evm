@@ -12,9 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-"use strict";
-
-import { WalletAccountEvm } from "@tetherto/wdk-wallet-evm";
 import { ConfidentialTransferClient } from "@fairblock/stabletrust";
 import { Wallet, JsonRpcProvider, BrowserProvider } from "ethers";
 import ConfidentialProtocol from "./confidential-protocol.js";
@@ -36,7 +33,38 @@ import ConfidentialProtocol from "./confidential-protocol.js";
  * @property {number} chainId - The chain ID.
  */
 
-export default class ConfidentialProtocolEvm extends ConfidentialProtocol {
+/**
+ * Enables confidentiality for a WDK account by patching it with confidential methods.
+ *
+ * @param {WalletAccountEvm} account - The WDK wallet account to enable confidentiality for.
+ * @param {ConfidentialProtocolConfig} config - The protocol configuration.
+ * @returns {Promise<WalletAccountEvm>} The same account instance, patched with confidential methods.
+ *
+ * @example
+ * const confAccount = await enableConfidentiality(account, { rpcUrl, chainId });
+ * await confAccount.depositConfidential({ token, amount });
+ * await confAccount.transferConfidential({ recipient, token, amount });
+ * await confAccount.withdrawConfidential({ token, amount });
+ */
+export async function enableConfidentiality(account, config) {
+  const protocol = new ConfidentialProtocolEvm(account, config);
+  await protocol.enableConfidentiality();
+
+  account.depositConfidential = (options) =>
+    protocol.depositConfidential(options);
+  account.withdrawConfidential = (options) =>
+    protocol.withdrawConfidential(options);
+  account.transferConfidential = (options) =>
+    protocol.transferConfidential(options);
+  account.getConfidentialBalance = (options) =>
+    protocol.getConfidentialBalance(options);
+  account.quoteTransferConfidential = (options) =>
+    protocol.quoteTransferConfidential(options);
+
+  return account;
+}
+
+export class ConfidentialProtocolEvm extends ConfidentialProtocol {
   /**
    * Creates a new interface to the confidential protocol for evm blockchains.
    *
@@ -213,9 +241,7 @@ export default class ConfidentialProtocolEvm extends ConfidentialProtocol {
    * @returns {Promise<bigint>} The quoted amount.
    */
   async quoteTransferConfidential(options) {
-    // Basic implementation returns 0 as fee calculation logic wasn't specified
-    // in the demo/requirements beyond simple operations.
-    // In a real implementation this might query the contract or estimated gas.
-    return 0n;
+    const fee = await this._client.getFeeAmount();
+    return fee;
   }
 }

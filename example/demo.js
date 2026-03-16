@@ -2,8 +2,8 @@ import WDK from "@tetherto/wdk";
 import WalletManagerEvm from "@tetherto/wdk-wallet-evm";
 import { ethers } from "ethers";
 import dotenv from "dotenv";
-import ConfidentialProtocolEvm from "../src/fairblock-protocol-evm.js";
-
+import { enableConfidentiality } from "../src/fairblock-protocol-evm.js";
+import { ERC20_ABI } from "./constants.js";
 dotenv.config();
 
 const USDT0_CONTRACT_ADDRESS = "0x78Cf24370174180738C5B8E352B6D14c83a6c9A9";
@@ -25,8 +25,15 @@ async function main() {
     if (!customSeedPhrase) {
       throw new Error("SEED_PHRASE not found in environment variables");
     }
-
     console.log("\n--- Initialize Tether WDK (Ethereum) ---");
+
+    const provider = new ethers.JsonRpcProvider(RPC_URL);
+    const tokenContract = new ethers.Contract(
+      USDT0_CONTRACT_ADDRESS,
+      ERC20_ABI,
+      provider,
+    );
+    const tokenDecimals = await tokenContract.decimals();
 
     const wdkWithWallets = new WDK(customSeedPhrase).registerWallet(
       "ethereum",
@@ -44,65 +51,55 @@ async function main() {
     const senderAddress = await sender.getAddress();
     const receiverAddress = await receiver.getAddress();
 
-    // --- FAIRBLOCK INTEGRATION START ---
-    console.log("\n--- Initializing Confidential Protocols ---");
+    console.log("\n--- Enabling Confidentiality ---");
 
-    // 1. Initialize Protocol Wrappers
-    const senderProtocol = new ConfidentialProtocolEvm(
-      sender,
-      CONFIDENTIAL_CONFIG,
-    );
-    const receiverProtocol = new ConfidentialProtocolEvm(
+    // Wrap accounts with confidential capabilities
+    console.log(`Enabling confidentiality for ${senderAddress}...`);
+    const confSender = await enableConfidentiality(sender, CONFIDENTIAL_CONFIG);
+
+    console.log(`Enabling confidentiality for ${receiverAddress}...`);
+    const confReceiver = await enableConfidentiality(
       receiver,
       CONFIDENTIAL_CONFIG,
     );
 
-    // 2. Enable Confidentiality
-    console.log(`Enabling confidentiality for ${senderAddress}...`);
-    await senderProtocol.enableConfidentiality();
-
-    console.log(`Enabling confidentiality for ${receiverAddress}...`);
-    await receiverProtocol.enableConfidentiality();
-
-    console.log("✓ Confidential accounts enabled via ConfidentialProtocolEvm");
-
-    // 3. Confidential Flow
+    console.log("✓ Confidential accounts enabled");
 
     // A. DEPOSIT
     console.log("\n--- 1. CONFIDENTIAL DEPOSIT ---");
     console.log("Depositing 1 tokens into confidential balance...");
-    const depositAmount = ethers.parseUnits("1", 2);
+    const depositAmount = ethers.parseUnits("1", tokenDecimals);
 
     // Check pre-deposit balance
-    let senderConfBalanceBefore = await senderProtocol.getConfidentialBalance({
+    let senderConfBalanceBefore = await confSender.getConfidentialBalance({
       token: USDT0_CONTRACT_ADDRESS,
     });
 
     console.log(
-      `Pre-Deposit Confidential Balance(Sender): ${ethers.formatUnits(senderConfBalanceBefore.amount, 2)} USDT0`,
+      `Pre-Deposit Confidential Balance(Sender): ${ethers.formatUnits(senderConfBalanceBefore.amount, tokenDecimals)} USDT0`,
     );
 
-    const depRes = await senderProtocol.depositConfidential({
+    const depRes = await confSender.depositConfidential({
       token: USDT0_CONTRACT_ADDRESS,
       amount: depositAmount,
     });
     console.log(`Tx Hash: ${depRes.hash}`);
     console.log(`View Transaction: ${EXPLORER_URL}${depRes.hash}`);
 
-    let senderConfBalanceAfter = await senderProtocol.getConfidentialBalance({
+    let senderConfBalanceAfter = await confSender.getConfidentialBalance({
       token: USDT0_CONTRACT_ADDRESS,
     });
 
     console.log(
-      `Post-Deposit Confidential Balance(Sender): ${ethers.formatUnits(senderConfBalanceAfter.amount, 2)} USDT0`,
+      `Post-Deposit Confidential Balance(Sender): ${ethers.formatUnits(senderConfBalanceAfter.amount, tokenDecimals)} USDT0`,
     );
 
     // B. TRANSFER
     console.log("\n--- 2. CONFIDENTIAL TRANSFER ---");
     console.log("Transferring 0.5 tokens confidentially to recipient...");
-    const transferAmount = ethers.parseUnits("0.5", 2);
+    const transferAmount = ethers.parseUnits("0.5", tokenDecimals);
 
-    const txRes = await senderProtocol.transferConfidential({
+    const txRes = await confSender.transferConfidential({
       recipient: receiverAddress,
       token: USDT0_CONTRACT_ADDRESS,
       amount: transferAmount,
@@ -115,19 +112,19 @@ async function main() {
     console.log(`View Transaction: ${EXPLORER_URL}${txRes.hash}`);
 
     let senderConfBalanceAfterTransfer =
-      await senderProtocol.getConfidentialBalance({
+      await confSender.getConfidentialBalance({
         token: USDT0_CONTRACT_ADDRESS,
       });
     console.log(
-      `Post-Transfer Confidential Balance(Sender): ${ethers.formatUnits(senderConfBalanceAfterTransfer.amount, 2)} USDT0`,
+      `Post-Transfer Confidential Balance(Sender): ${ethers.formatUnits(senderConfBalanceAfterTransfer.amount, tokenDecimals)} USDT0`,
     );
 
     // C. WITHDRAW
     console.log("\n--- 3. WITHDRAW ---");
     console.log("Withdrawing 0.5 tokens to public balance...");
-    const withdrawAmount = ethers.parseUnits("0.5", 2);
+    const withdrawAmount = ethers.parseUnits("0.5", tokenDecimals);
 
-    const withdrawRes = await receiverProtocol.withdrawConfidential({
+    const withdrawRes = await confReceiver.withdrawConfidential({
       token: USDT0_CONTRACT_ADDRESS,
       amount: withdrawAmount,
     });
@@ -135,11 +132,11 @@ async function main() {
     console.log(`Tx Hash: ${withdrawRes.hash}`);
     console.log(`View Transaction: ${EXPLORER_URL}${withdrawRes.hash}`);
     let receiverConfBalanceAfterWithdraw =
-      await receiverProtocol.getConfidentialBalance({
+      await confReceiver.getConfidentialBalance({
         token: USDT0_CONTRACT_ADDRESS,
       });
     console.log(
-      `Post-Withdraw Confidential Balance(Receiver): ${ethers.formatUnits(receiverConfBalanceAfterWithdraw.amount, 2)} USDT0`,
+      `Post-Withdraw Confidential Balance(Receiver): ${ethers.formatUnits(receiverConfBalanceAfterWithdraw.amount, tokenDecimals)} USDT0`,
     );
 
     console.log("\n=== Demo Complete ===");
