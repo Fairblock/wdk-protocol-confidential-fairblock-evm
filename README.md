@@ -2,7 +2,7 @@
 
 **Note**: This package is currently in beta. Please test thoroughly in development environments before using in production.
 
-A privacy-preserving package that lets EVM wallet accounts perform confidential token transfers using the Fairblock protocol. This package provides a clean SDK for depositing, transferring, and withdrawing tokens confidentially on supported EVM-compatible chains using the StableTrust contract system.
+A privacy-preserving package that lets EVM wallet accounts perform confidential token transfers using the Fairblock protocol. This package provides a clean SDK for depositing, transferring, and withdrawing tokens confidentially on supported EVM-compatible chains using the Stabletrust contract system.
 
 This module can be managed by the [`@tetherto/wdk`](https://github.com/tetherto/wdk-core) package, which provides a unified interface for managing multiple WDK wallet and protocol modules across different blockchains.
 
@@ -14,9 +14,9 @@ For detailed documentation about the complete WDK ecosystem, visit [docs.wallet.
 
 ## 🌟 Features
 
-- **Confidential Transfers**: Move tokens privately between addresses without revealing amounts or recipients on-chain.
+- **Confidential Transfers**: Move tokens privately between addresses without revealing amounts or recipients onchain.
 - **Fairblock Integration**: Full integration with Fairblock's encryption and privacy technologies.
-- **StableTrust Wrapper**: Simplified interaction with the StableTrust contract for confidential operations.
+- **Stabletrust Wrapper**: Simplified interaction with the Stabletrust contract for confidential operations.
 - **Account Abstraction**: Works seamlessly with WDK EVM wallet accounts.
 - **Key Management**: Automatically handles key derivation and registration for confidential operations.
 - **Balance Privacy**: Check confidential balances that are only visible to the key holder.
@@ -58,7 +58,7 @@ const wdk = new WDK(process.env.SEED_PHRASE).registerWallet(
 );
 const account = await wdk.getAccount("ethereum", 0);
 
-// Enable confidentiality — patches the account with confidential methods
+// Enable confidentiality patches the account with confidential methods
 const confAccount = await enableConfidentiality(account, {
   rpcUrl: "https://rpc.testnet.stable.xyz",
   chainId: 2201,
@@ -89,14 +89,14 @@ console.log("Withdrawal Hash:", withdrawResult.hash);
 
 ### Table of Contents
 
-| Export                                              | Description                                                          |
-| --------------------------------------------------- | -------------------------------------------------------------------- |
-| [`enableConfidentiality`](#enableconfidentiality)   | Main function — wraps a WDK account with confidential capabilities.  |
-| [`ConfidentialProtocolEvm`](#confidentialprotocolevm) | Lower-level class for advanced use cases.                          |
+| Export                                                | Description                                                       |
+| ----------------------------------------------------- | ----------------------------------------------------------------- |
+| [`enableConfidentiality`](#enableconfidentiality)     | Main function wraps a WDK account with confidential capabilities. |
+| [`ConfidentialProtocolEvm`](#confidentialprotocolevm) | Lower-level class for advanced use cases.                         |
 
 ### `enableConfidentiality(account, config)`
 
-The primary API. Takes a WDK account, registers it for confidential operations on-chain, and patches it in-place with confidential methods. Returns the same account instance.
+The primary API. Takes a WDK account, registers it for confidential operations onchain, and patches it in-place with confidential methods. Returns the same account instance.
 
 ```javascript
 const confAccount = await enableConfidentiality(account, config);
@@ -109,7 +109,7 @@ const confAccount = await enableConfidentiality(account, config);
   - `rpcUrl` (string): JSON-RPC URL of the network.
   - `chainId` (number): Chain ID of the network.
 
-**Returns:** `Promise<ConfidentialAccount>` — the original account patched with the methods below.
+**Returns:** `Promise<ConfidentialAccount>` the original account patched with the methods below.
 
 #### Methods on `confAccount`
 
@@ -177,7 +177,7 @@ Gets the estimated fee for a confidential transfer operation.
 
 ## 🌐 Supported Networks
 
-This package is designed for EVM-compatible networks where the Fairblock / StableTrust contracts are deployed.
+This package is designed for EVM-compatible networks where the Fairblock / Stabletrust contracts are deployed.
 
 | Network  | Chain ID |
 | -------- | -------- |
@@ -190,7 +190,7 @@ This package is designed for EVM-compatible networks where the Fairblock / Stabl
 
 **Token Support:**
 
-- Supports standard ERC-20 tokens that are compatible with the StableTrust contract.
+- Supports standard ERC-20 tokens that are compatible with the Stabletrust contract.
 
 ## 🔒 Security Considerations
 

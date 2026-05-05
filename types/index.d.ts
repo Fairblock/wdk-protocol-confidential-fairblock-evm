@@ -51,8 +51,7 @@ export interface ConfidentialProtocolConfig {
  * A WDK account patched with confidential methods after calling enableConfidentiality().
  */
 export type ConfidentialAccount<
-  T extends WalletAccountReadOnlyEvm | WalletAccountEvm =
-    WalletAccountEvm,
+  T extends WalletAccountReadOnlyEvm | WalletAccountEvm = WalletAccountEvm,
 > = T & {
   depositConfidential(
     options: DepositConfidentialOptions,
@@ -73,7 +72,7 @@ export type ConfidentialAccount<
 
 /**
  * Enables confidentiality for a WDK account by patching it with confidential methods.
- * Registers the account's public key on-chain and returns the same account instance
+ * Registers the account's public key onchain and returns the same account instance
  * augmented with confidential operations.
  *
  * @example

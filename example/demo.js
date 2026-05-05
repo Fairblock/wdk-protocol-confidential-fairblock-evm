@@ -106,7 +106,7 @@ async function main() {
     });
 
     console.log(
-      "Status: Confidential Transfer is completed. Transfer amount is hidden on-chain.",
+      "Status: Confidential Transfer is completed. Transfer amount is hidden onchain.",
     );
     console.log(`Tx Hash: ${txRes.hash}`);
     console.log(`View Transaction: ${EXPLORER_URL}${txRes.hash}`);
